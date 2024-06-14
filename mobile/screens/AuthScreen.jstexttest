@@ -1,0 +1,41 @@
+import React from 'react';
+import { ImageBackground, StyleSheet, View, Text } from 'react-native';
+import gradientBackImage from '../public/images/gradient-back.jpg';
+
+// Check if the image file is being loaded correctly
+console.log('Image file:', gradientBackImage);
+
+// Check the image file path for any potential issues
+console.log('Image path:', '../public/images/gradientbackground.jpg');
+
+const AuthScreen = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Testing Image Background A</Text>
+      <ImageBackground 
+        source={gradientBackImage}
+        style={styles.imageBackground}
+        resizeMode="cover"
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    color: 'black',
+    fontSize: 20,
+    marginBottom: 20, // Add margin bottom to create space between text and image
+  },
+  imageBackground: {
+    width: 200, // Set a fixed width for the image
+    height: 200, // Set a fixed height for the image
+  },
+});
+
+export default AuthScreen;

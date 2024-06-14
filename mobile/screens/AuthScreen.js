@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { ImageBackground, View, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const API_URL = Platform.OS === 'ios' ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
 
 const AuthScreen = () => {
+    const navigation = useNavigation();
 
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
@@ -90,10 +92,13 @@ const AuthScreen = () => {
                         <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword}></TextInput>
                         <Text style={[styles.message, {color: isError ? 'red' : 'green'}]}>{message ? getMessage() : null}</Text>
                         <TouchableOpacity style={styles.button} onPress={onSubmitHandler}>
-                            <Text style={styles.buttonText}>Submit</Text>
+                            <Text style={styles.buttonText}>{isLogin ? 'Login' : 'Signup'}</Text>   
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.buttonAlt} onPress={onChangeHandler}>
                             <Text style={styles.buttonAltText}>{isLogin ? 'Sign Up' : 'Log In'}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonAlt} onPress={() => navigation.navigate('Dashboard')}>
+                            <Text style={styles.buttonAltText}>Go to Dashboard</Text>
                         </TouchableOpacity>
                     </View>    
                 </View>
@@ -105,9 +110,9 @@ const AuthScreen = () => {
 const styles = StyleSheet.create({
     image: {
         flex: 1,
-        width: '95%',
+        width: '100%',
+        height: '100%',
         alignItems: 'center',
-        
     },  
     card: {
         flex: 1,

@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 const Dashboard = () => {
+    const [avgPuttDist, setAvgPuttDist] = useState(null);
+
+    useEffect(() => {
+        fetch('http://localhost:3000/api/puttstats')
+            .then(response => response.json())
+            .then(data => setAvgPuttDist(data.avgPuttDist))
+            .catch(error => console.error('Error fetching putt stats:', error));
+    }, []);
+
     return (
         <View style={styles.container}>
             <Text style={styles.text1}>Welcome to the Dashboard!</Text>
@@ -9,7 +18,7 @@ const Dashboard = () => {
             <Text style={styles.text2}>Putting Stats</Text>
             <View style={styles.columnContainer}>
                 <View style={styles.leftColumn}>
-                    <Text style={styles.text3}>Avg Putt Dist: 4 </Text>
+                    <Text style={styles.text3}>Avg Putt Dist: {avgPuttDist !== null ? avgPuttDist : 'Loading...'} </Text>
                     <Text style={styles.text3}>Tot Putt Dist: 71 </Text>
                     <Text style={styles.text3}>Avg 3 putts: 1.7 </Text>
                 </View>
@@ -23,8 +32,8 @@ const Dashboard = () => {
             <Text style={styles.text2}>Game Stats</Text>
             <View style={styles.columnContainer}>
                 <View style={styles.leftColumn}>
-                    <Text style={styles.text3}>Games Played: 20 </Text>
-                    <Text style={styles.text3}>Wins: 15 </Text>
+                    <Text style={styles.text3}>Games Played: 20 </ Text>
+                    <Text style={styles.text3}>Wins: 15 </ Text>
                     <Text style={styles.text3}>Losses: 5 </Text>
                 </View>
                 <View style={styles.rightColumn}>
@@ -40,7 +49,7 @@ const Dashboard = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'top',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         marginTop: 20,
     },
@@ -51,19 +60,17 @@ const styles = StyleSheet.create({
     leftColumn: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'flex-start',
-        marginLeft: 60,
+        alignItems: 'center',
     },
     rightColumn: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'flex-start',
-        marginRight: 50,
+        alignItems: 'center',
     },
     text1: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: 10,
     },
     text2: {
         fontSize: 18,

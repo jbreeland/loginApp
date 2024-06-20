@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageBackground, View, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const API_URL = Platform.OS === 'ios' ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
@@ -82,7 +82,7 @@ const AuthScreen = () => {
     }
 
     return (
-        <ImageBackground source={require('../public/images/gradient-back.jpeg')} style={styles.image}>
+        <View style={styles.image}>
             <View style={styles.card}>
                 <Text style={styles.heading}>{isLogin ? 'Login' : 'Signup'}</Text>
                 <View style={styles.form}>
@@ -103,7 +103,7 @@ const AuthScreen = () => {
                     </View>    
                 </View>
             </View>
-        </ImageBackground>
+        </View>
     );
 };
 

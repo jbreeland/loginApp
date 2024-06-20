@@ -1,8 +1,13 @@
 import { Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize('loginDB', 'root', 'jb0606jbmysql', {
+// Connection for loginDB
+export const loginDB = new Sequelize('loginDB', 'root', 'jb0606jbmysql', {
+    host: 'localhost',
     dialect: 'mysql',
-    host: 'localhost', 
 });
 
-export default sequelize;
+// Connection for Putts
+export const puttsDB = new Sequelize('Putts', 'root', 'jb0606jbmysql', {
+    host: 'localhost',
+    dialect: 'mysql',
+});

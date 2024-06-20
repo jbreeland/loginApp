@@ -1,13 +1,10 @@
 import express from 'express';
-
-import sequelize from './utils/database.js';
-
+import { loginDB, puttsDB } from './utils/database.js';
 import router from './routes/routes.js';
 
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.json());
 
 app.use((_, res, next) => {
@@ -19,6 +16,18 @@ app.use((_, res, next) => {
 
 app.use(router);
 
-sequelize.sync(); 
+const initializeDatabases = async () => {
+    try {
+        await loginDB.sync();
+        await puttsDB.sync();
+        console.log('Both databases have been synchronized successfully.');
+    } catch (error) {
+        console.error('Unable to synchronize the databases:', error);
+    }
+};
 
-app.listen(3000);
+initializeDatabases();
+
+app.listen(3000, () => {
+    console.log('Server running on http://localhost:3000');
+});

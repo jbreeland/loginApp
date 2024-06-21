@@ -1,5 +1,5 @@
 import express from 'express';
-import { loginDB, puttsDB } from './utils/database.js';
+import { loginDB} from './utils/database.js';
 import router from './routes/routes.js';
 
 const app = express();
@@ -19,8 +19,8 @@ app.use(router);
 const initializeDatabases = async () => {
     try {
         await loginDB.sync();
-        await puttsDB.sync();
-        console.log('Both databases have been synchronized successfully.');
+        
+        console.log('Login database has been synchronized successfully.');
     } catch (error) {
         console.error('Unable to synchronize the databases:', error);
     }

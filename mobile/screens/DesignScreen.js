@@ -86,7 +86,7 @@ const DesignScreen = () => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.switchContainer}>
-                    <Text style={styles.switchLabel}>GIR: </Text>
+                    <Text style={styles.switchLabel}> GIR: </Text>
                     <Switch style={styles.smallSwitch} value={gir} onValueChange={setGir} />
                 </View>
                 <View style={styles.switchContainer}>
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     holeContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 5,
     },
     arrow: {
         fontSize: 24,
@@ -159,23 +159,28 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         width: '100%',
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
+       
     },
     scoreContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 20,
-        borderWidth: 1, // Add border for the box
-        borderColor: '#ccc', // Set border color
-        padding: 10, // Add padding for the box
-        borderRadius: 5, // Optional: Add border radius for rounded corners
-        transform: [{ scale: 0.75 }],
+        justifyContent: 'flex-start', // Aligns the score container to the left
+        marginTop: 5, // Move closer to the scorecard
+        borderWidth: 1, 
+        borderColor: '#ccc', 
+        padding: 5, 
+        borderRadius: 5, 
+        
+        //transform: [{ scale: 0.75 }],
     },
     scoreLabel: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         marginRight: 10,
+        marginTop: 1,
+        marginBottom: 1,
+        marginLeft: 10,
     },
     circleButton: {
         width: 40,
@@ -199,14 +204,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 5,
-        alignSelf: 'flex-start', // Aligns the switch containers to the left
-        marginTop: 5,
+        alignSelf: 'flex-start', 
+        marginTop: 5, // Move closer to the scorecard
         transform: [{ scale: 0.75 }],
     },
     switchLabel: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginRight: 1,
+        marginRight: 10,
+        
     },
     smallSwitch: {
         transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }],

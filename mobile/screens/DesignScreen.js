@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Switch } from 'react-native';
 
 const holes = Array.from({ length: 18 }, (_, i) => i + 1);
 const parValues = [4, 4, 3, 4, 5, 3, 4, 5, 4, 4, 5, 3, 4, 4, 3, 5, 4, 4]; // Example par values, replace with actual values
@@ -8,6 +8,8 @@ const tempScores = [4, 5, 3, 4, 6, 3, 5, 5, 4, 4, 6, 3, 4, 5, 3, 6, 4, 5]; // Te
 const DesignScreen = () => {
     const [currentHole, setCurrentHole] = useState(1);
     const [score, setScore] = useState(parValues[0]);
+    const [gir, setGir] = useState(false);
+    const [upDown, setUpDown] = useState(false);
 
     const goToPreviousHole = () => {
         setCurrentHole(prev => {
@@ -83,6 +85,14 @@ const DesignScreen = () => {
                         <Text style={styles.buttonText}>+</Text>
                     </TouchableOpacity>
                 </View>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.switchLabel}>GIR: </Text>
+                    <Switch style={styles.smallSwitch} value={gir} onValueChange={setGir} />
+                </View>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.switchLabel}>Up/Down: </Text>
+                    <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
+                </View>
             </View>
         </View>
     );
@@ -140,7 +150,7 @@ const styles = StyleSheet.create({
         fontSize: 14, // Font size for the score in the scorecard
     },
     scoreText: {
-        fontSize: 24, // Font size for the score in the score container
+        fontSize: 16, // Font size for the score in the score container
         fontWeight: 'bold',
         marginHorizontal: 10,
     },
@@ -184,6 +194,22 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#bbb',
         textAlign: 'center',
+    },
+    switchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 5,
+        alignSelf: 'flex-start', // Aligns the switch containers to the left
+        marginTop: 5,
+        transform: [{ scale: 0.75 }],
+    },
+    switchLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginRight: 1,
+    },
+    smallSwitch: {
+        transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }],
     },
 });
 

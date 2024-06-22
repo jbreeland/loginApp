@@ -1,11 +1,11 @@
-import { loginDB } from '../utils/database.js'; // Use the correct connection
+import { getAvgPuttDist } from '../services/puttstatsService.js';
 
 export const getPuttStats = async (req, res) => {
     try {
-        const result = await loginDB.query('SELECT AVG(putt_dist) as avg_putt_dist FROM putt_stats');
-        const avgPuttDist = result[0][0].avg_putt_dist;
+        const avgPuttDist = await getAvgPuttDist();
         res.json({ avgPuttDist });
     } catch (error) {
+        console.error('Error fetching putt stats:', error);
         res.status(500).json({ error: 'Failed to fetch putt stats' });
     }
 };

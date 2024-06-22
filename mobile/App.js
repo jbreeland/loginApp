@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import DataEntryScreen from './screens/DataEntryScreen';
 import AuthScreen from './screens/AuthScreen';
 import Dashboard from './screens/Dashboard';
 
@@ -14,6 +15,7 @@ const App = () => {
         <Stack.Navigator initialRouteName="Auth">
           <Stack.Screen name="Auth" component={AuthScreen} />
           <Stack.Screen name="Dashboard" component={Dashboard} />
+          <Stack.Screen name="DataEntry" component={DataEntryScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     );

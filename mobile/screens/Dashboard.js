@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const Dashboard = () => {
     const [avgPuttDist, setAvgPuttDist] = useState(null);
+    const navigation = useNavigation();
 
     useEffect(() => {
         fetch('http://localhost:3000/api/puttstats')
@@ -19,8 +21,8 @@ const Dashboard = () => {
             <View style={styles.columnContainer}>
                 <View style={styles.leftColumn}>
                     <Text style={styles.text3}>Avg Putt Dist: {avgPuttDist !== null ? avgPuttDist : 'Loading...'} </Text>
-                    <Text style={styles.text3}>Tot Putt Dist: 71 </Text>
-                    <Text style={styles.text3}>Avg 3 putts: 1.7 </Text>
+                    <Text style={styles.text3}>Tot Putt Dist: 71 </ Text>
+                    <Text style={styles.text3}>Avg 3 putts: 1.7 </ Text>
                 </View>
                 <View style={styles.rightColumn}>
                     <Text style={styles.text3}>1st putt make %: 25%</Text>
@@ -34,7 +36,7 @@ const Dashboard = () => {
                 <View style={styles.leftColumn}>
                     <Text style={styles.text3}>Games Played: 20 </ Text>
                     <Text style={styles.text3}>Wins: 15 </ Text>
-                    <Text style={styles.text3}>Losses: 5 </Text>
+                    <Text style={styles.text3}>Losses: 5 </ Text>
                 </View>
                 <View style={styles.rightColumn}>
                     <Text style={styles.text3}>Avg Score: 70</Text>
@@ -42,6 +44,11 @@ const Dashboard = () => {
                     <Text style={styles.text3}>Worst Score: 80</Text>
                 </View>
             </View>
+
+            <Button
+                title="Go to Data Entry"
+                onPress={() => navigation.navigate('DataEntry')}
+            />
         </View>
     );
 };

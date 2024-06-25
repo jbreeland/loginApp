@@ -98,7 +98,7 @@ const DesignScreen = () => {
                         <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
                     </View>
                     <View style={styles.distanceContainer}>
-                        <Text style={styles.distanceLabel}>Distance: </Text>
+                        <Text style={styles.distanceLabel}> Putt Distance: </Text>
                         <ScrollView style={styles.scrollBox}>
                             {distances.map((distance, index) => (
                                 <TouchableOpacity

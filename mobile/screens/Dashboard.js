@@ -21,7 +21,7 @@ const Dashboard = () => {
             <View style={styles.columnContainer}>
                 <View style={styles.leftColumn}>
                     <Text style={styles.text3}>Avg Putt Dist: {avgPuttDist !== null ? avgPuttDist : 'Loading...'} </Text>
-                    <Text style={styles.text3}>Tot Putt Dist: 71 </Text>
+                    <Text style={styles.text3}>Tot Putt Dist: 71 </ Text>
                     <Text style={styles.text3}>Avg 3 putts: 1.7 </Text>
                 </View>
                 <View style={styles.rightColumn}>
@@ -46,11 +46,11 @@ const Dashboard = () => {
             </View>
             <Button 
                 title="Go to Design Screen" 
-                onPress={() => navigation.navigate('Design')} // Make sure the screen name matches
+                onPress={() => navigation.navigate('Design')} 
             />
             <Button 
-                title="Go to Data Entry" 
-                onPress={() => navigation.navigate('DataEntry')} // Make sure the screen name matches
+                title="Go to Test Screen" 
+                onPress={() => navigation.navigate('Test')} 
             />
         </View>
     );

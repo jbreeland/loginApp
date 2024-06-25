@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 20,
-        width: '100%',
+        width: '75%',
     },
     distanceLabel: {
         fontSize: 18,
@@ -125,14 +125,15 @@ const styles = StyleSheet.create({
     },
     scrollBox: {
         height: 50,
-        width: 100, // Adjust the width as needed
+        width: 10, // Adjust the width as needed
         borderWidth: 1,
         borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 5,
+        borderRadius: 20,
+        padding: 1,
+        alignSelf: 'flex-start'
     },
     distanceOption: {
-        padding: 10,
+        padding: 5,
         backgroundColor: '#f0f0f0',
         marginVertical: 5,
         borderRadius: 5,

@@ -5,6 +5,7 @@ import DataEntryScreen from './screens/DataEntryScreen';
 import AuthScreen from './screens/AuthScreen';
 import Dashboard from './screens/Dashboard';
 import DesignScreen from './screens/DesignScreen';
+import TestScreen from './screens/TestScreen';
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,7 @@ const App = () => {
           <Stack.Screen name="Dashboard" component={Dashboard} />
           <Stack.Screen name="DataEntry" component={DataEntryScreen} />
           <Stack.Screen name="Design" component={DesignScreen} />
+          <Stack.Screen name='Test' component={TestScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     );

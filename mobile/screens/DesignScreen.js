@@ -10,6 +10,9 @@ const DesignScreen = () => {
     const [score, setScore] = useState(parValues[0]);
     const [gir, setGir] = useState(false);
     const [upDown, setUpDown] = useState(false);
+    const [fairway, setFairway] = useState('Hit'); // Default to 'Hit'
+
+    const fairwayOptions = ['Far Left', 'Left', 'Hit', 'Right', 'Far Right'];
 
     const goToPreviousHole = () => {
         setCurrentHole(prev => {
@@ -45,6 +48,10 @@ const DesignScreen = () => {
         }
     };
 
+    const handleFairwayPress = (option) => {
+        setFairway(option);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.holeContainer}>
@@ -75,23 +82,78 @@ const DesignScreen = () => {
                 </TouchableOpacity>
             </View>
             <View style={styles.content}>
-                <View style={styles.scoreContainer}>
-                    <Text style={styles.scoreLabel}>Score: </Text>
-                    <TouchableOpacity style={styles.circleButton} onPress={decreaseScore}>
-                        <Text style={styles.buttonText}>-</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.scoreText}>{score}</Text>
-                    <TouchableOpacity style={styles.circleButton} onPress={increaseScore}>
-                        <Text style={styles.buttonText}>+</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.switchContainer}>
-                    <Text style={styles.switchLabel}> GIR: </Text>
-                    <Switch style={styles.smallSwitch} value={gir} onValueChange={setGir} />
-                </View>
-                <View style={styles.switchContainer}>
-                    <Text style={styles.switchLabel}>Up/Down: </Text>
-                    <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
+                <View style={styles.alignedContainer}>
+                    <View style={styles.scoreContainer}>
+                        <Text style={styles.scoreLabel}>Score: </Text>
+                        <TouchableOpacity style={styles.circleButton} onPress={decreaseScore}>
+                            <Text style={styles.buttonText}>-</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.scoreText}>{score}</Text>
+                        <TouchableOpacity style={styles.circleButton} onPress={increaseScore}>
+                            <Text style={styles.buttonText}>+</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.switchContainer}>
+                        <Text style={styles.switchLabel}>GIR: </Text>
+                        <Switch style={styles.smallSwitch} value={gir} onValueChange={setGir} />
+                    </View>
+                    <View style={styles.switchContainer}>
+                        <Text style={styles.switchLabel}>Up/Down: </Text>
+                        <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
+                    </View>
+                    <View style={styles.fairwayContainer}>
+                        <View style={styles.fairwayRow}>
+                            <TouchableOpacity
+                                style={[
+                                    styles.fairwayButton,
+                                    fairway === 'Far Left' && styles.selectedFairwayButton
+                                ]}
+                                onPress={() => handleFairwayPress('Far Left')}
+                            >
+                                <Text style={styles.fairwayButtonText}>Far Left</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[
+                                    styles.fairwayButton,
+                                    fairway === 'Left' && styles.selectedFairwayButton
+                                ]}
+                                onPress={() => handleFairwayPress('Left')}
+                            >
+                                <Text style={styles.fairwayButtonText}>Left</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.hitButtonContainer}>
+                            <TouchableOpacity
+                                style={[
+                                    styles.hitButton,
+                                    fairway === 'Hit' && styles.selectedFairwayButton
+                                ]}
+                                onPress={() => handleFairwayPress('Hit')}
+                            >
+                                <Text style={styles.fairwayButtonText}>Hit</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.fairwayRow}>
+                            <TouchableOpacity
+                                style={[
+                                    styles.fairwayButton,
+                                    fairway === 'Right' && styles.selectedFairwayButton
+                                ]}
+                                onPress={() => handleFairwayPress('Right')}
+                            >
+                                <Text style={styles.fairwayButtonText}>Right</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[
+                                    styles.fairwayButton,
+                                    fairway === 'Far Right' && styles.selectedFairwayButton
+                                ]}
+                                onPress={() => handleFairwayPress('Far Right')}
+                            >
+                                <Text style={styles.fairwayButtonText}>Far Right</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
             </View>
         </View>
@@ -108,7 +170,7 @@ const styles = StyleSheet.create({
     holeContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 5,
+        marginBottom: 20,
     },
     arrow: {
         fontSize: 24,
@@ -159,28 +221,28 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         width: '100%',
-        paddingHorizontal: 10,
-       
+        paddingHorizontal: 20,
+    },
+    alignedContainer: {
+        marginTop: 10,
+        marginLeft: 0,
     },
     scoreContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start', // Aligns the score container to the left
-        marginTop: 5, // Move closer to the scorecard
-        borderWidth: 1, 
-        borderColor: '#ccc', 
-        padding: 5, 
-        borderRadius: 5, 
-        
-        //transform: [{ scale: 0.75 }],
+        justifyContent: 'flex-start', // Align to the left
+        marginTop: 1,
+        //marginBottom: 10,
+        //borderWidth: 1, // Add border for the box
+        //borderColor: '#ccc', // Set border color
+        //padding: 10, // Add padding for the box
+        //borderRadius: 5, // Optional: Add border radius for rounded corners
+        transform: [{ scale: 0.75 }],
     },
     scoreLabel: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
         marginRight: 10,
-        marginTop: 1,
-        marginBottom: 1,
-        marginLeft: 10,
     },
     circleButton: {
         width: 40,
@@ -203,19 +265,58 @@ const styles = StyleSheet.create({
     switchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 5,
-        alignSelf: 'flex-start', 
-        marginTop: 5, // Move closer to the scorecard
+        marginBottom: 1,
+        marginTop: 1,
         transform: [{ scale: 0.75 }],
     },
     switchLabel: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         marginRight: 10,
-        
     },
     smallSwitch: {
         transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }],
+    },
+    fairwayContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginTop: 10,
+        marginBottom: 20,
+    },
+    fairwayRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        marginBottom: 5,
+    },
+    fairwayButton: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#ccc',
+        marginHorizontal: 5,
+        borderRadius: 5,
+    },
+    selectedFairwayButton: {
+        backgroundColor: '#888',
+    },
+    hitButtonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 5,
+    },
+    hitButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#ccc',
+        borderRadius: 5,
+    },
+    fairwayButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
 

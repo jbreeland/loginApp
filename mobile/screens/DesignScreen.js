@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Switch, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Switch, ScrollView, Image, Alert } from 'react-native';
 import styles from './DesignScreenStyles';
 
 const holes = Array.from({ length: 18 }, (_, i) => i + 1);
@@ -13,6 +13,9 @@ const DesignScreen = () => {
     const [gir, setGir] = useState(false);
     const [upDown, setUpDown] = useState(false);
     const [selectedDistance, setSelectedDistance] = useState(null);
+    const [misread, setMisread] = useState(false);
+    const [activeSlopeButton, setActiveSlopeButton] = useState(null); // State for the active button in slope selection
+    const [activePuttMissButton, setActivePuttMissButton] = useState(null); // State for the active button in putt miss selection
 
     const goToPreviousHole = () => {
         setCurrentHole(prev => {
@@ -46,6 +49,16 @@ const DesignScreen = () => {
         } else {
             return holes.slice(currentHole - 3, currentHole + 2);
         }
+    };
+
+    const handleSlopePress = (section) => {
+        Alert.alert(`Slope section pressed: ${section}`);
+        setActiveSlopeButton(section); // Set the active button in slope selection
+    };
+
+    const handlePuttMissPress = (section) => {
+        Alert.alert(`Putt miss section pressed: ${section}`);
+        setActivePuttMissButton(section); // Set the active button in putt miss selection
     };
 
     return (
@@ -97,9 +110,90 @@ const DesignScreen = () => {
                         <Text style={styles.switchLabel}>Up/Down: </Text>
                         <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
                     </View>
+                </View>
+                <View style={styles.rowContainer}>
+                    <View style={styles.imageContainer}>
+                        <Image source={require('../images/slope.png')} style={styles.image} />
+                        <View style={styles.overlayContainer}>
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionTop, activeSlopeButton === 'top' && styles.activeButton]}
+                                onPress={() => handleSlopePress('top')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionTopLeft, activeSlopeButton === 'top-left' && styles.activeButton]}
+                                onPress={() => handleSlopePress('top-left')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionTopRight, activeSlopeButton === 'top-right' && styles.activeButton]}
+                                onPress={() => handleSlopePress('top-right')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionLeft, activeSlopeButton === 'left' && styles.activeButton]}
+                                onPress={() => handleSlopePress('left')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionRight, activeSlopeButton === 'right' && styles.activeButton]}
+                                onPress={() => handleSlopePress('right')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionBottomLeft, activeSlopeButton === 'bottom-left' && styles.activeButton]}
+                                onPress={() => handleSlopePress('bottom-left')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionBottomRight, activeSlopeButton === 'bottom-right' && styles.activeButton]}
+                                onPress={() => handleSlopePress('bottom-right')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionBottom, activeSlopeButton === 'bottom' && styles.activeButton]}
+                                onPress={() => handleSlopePress('bottom')}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.imageContainer}>
+                        <Image source={require('../images/puttmiss.png')} style={styles.image} />
+                        <View style={styles.overlayContainer}>
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionTop, activePuttMissButton === 'long' && styles.activeButton]}
+                                onPress={() => handlePuttMissPress('long')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionTopLeft, activePuttMissButton === 'long-left' && styles.activeButton]}
+                                onPress={() => handlePuttMissPress('long-left')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionTopRight, activePuttMissButton === 'long-right' && styles.activeButton]}
+                                onPress={() => handlePuttMissPress('long-right')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionLeft, activePuttMissButton === 'left' && styles.activeButton]}
+                                onPress={() => handlePuttMissPress('left')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionRight, activePuttMissButton === 'right' && styles.activeButton]}
+                                onPress={() => handlePuttMissPress('right')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionBottomLeft, activePuttMissButton === 'short-left' && styles.activeButton]}
+                                onPress={() => handlePuttMissPress('short-left')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionBottomRight, activePuttMissButton === 'short-right' && styles.activeButton]}
+                                onPress={() => handlePuttMissPress('short-right')}
+                            />
+                            <TouchableOpacity
+                                style={[styles.overlaySection, styles.sectionBottom, activePuttMissButton === 'short' && styles.activeButton]}
+                                onPress={() => handlePuttMissPress('short')}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.verticalContainer}>
+                    <View style={styles.switchContainer}>
+                        <Text style={styles.switchLabel}>Misread: </Text>
+                        <Switch style={styles.smallSwitch} value={misread} onValueChange={setMisread} />
+                    </View>
                     <View style={styles.distanceContainer}>
-                        <Text style={styles.distanceLabel}> Putt Distance: </Text>
-                        <ScrollView style={styles.scrollBox}>
+                        <Text style={styles.distanceLabel}>Putt Distance: </Text>
+                        <ScrollView style={styles.scrollBox}> 
                             {distances.map((distance, index) => (
                                 <TouchableOpacity
                                     key={index}
@@ -117,7 +211,8 @@ const DesignScreen = () => {
                 </View>
             </View>
         </View>
-    );
+    </View>
+);
 };
-
 export default DesignScreen;
+    

@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     },
     hole: {
         width: 50,
-        height: 110,
+        height: 110, // Increased height
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 5,
@@ -49,10 +49,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     scoreCardText: {
-        fontSize: 14,
+        fontSize: 14, // Font size for the score in the scorecard
     },
     scoreText: {
-        fontSize: 16,
+        fontSize: 16, // Font size for the score in the score container
         fontWeight: 'bold',
         marginHorizontal: 10,
     },
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     scoreContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'flex-start', // Align to the left
         marginTop: 1,
         transform: [{ scale: 0.75 }],
     },
@@ -113,37 +113,99 @@ const styles = StyleSheet.create({
         transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }],
     },
     distanceContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 20,
-        width: '75%',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        marginBottom: 10,
+        marginTop: 10,
+        transform: [{ scale: 0.75 }],
     },
     distanceLabel: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         marginRight: 10,
     },
     scrollBox: {
-        height: 50,
-        width: 10, // Adjust the width as needed
+        height: 40,
+        width: 100,
         borderWidth: 1,
         borderColor: '#ccc',
-        borderRadius: 20,
-        padding: 1,
-        alignSelf: 'flex-start'
+        borderRadius: 10,
     },
     distanceOption: {
-        padding: 5,
-        backgroundColor: '#f0f0f0',
-        marginVertical: 5,
-        borderRadius: 5,
+        padding: 10,
+        justifyContent: 'center',
         alignItems: 'center',
-    },
-    selectedDistanceOption: {
-        backgroundColor: '#ddd',
     },
     distanceOptionText: {
         fontSize: 14,
+    },
+    selectedDistanceOption: {
+        backgroundColor: '#hhh',
+    },
+    rowContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 20,
+        width: '100%',
+    },
+    image: {
+        width: 125, // Increased width
+        height: 125, // Increased height
+        resizeMode: 'contain',
+    },
+    overlayContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    overlaySection: {
+        position: 'absolute',
+        width: '20%',
+        height: '20%',
+        backgroundColor: 'rgba(0, 0, 0, 0)', // Transparent background
+    },
+    sectionTop: {
+        top: '0%',
+        left: '40%',
+    },
+    sectionTopLeft: {
+        top: '10%',
+        left: '10%',
+    },
+    sectionTopRight: {
+        top: '10%',
+        right: '10%',
+    },
+    sectionLeft: {
+        top: '40%',
+        left: '0%',
+    },
+    sectionRight: {
+        top: '40%',
+        right: '0%',
+    },
+    sectionBottomLeft: {
+        bottom: '10%',
+        left: '10%',
+    },
+    sectionBottomRight: {
+        bottom: '10%',
+        right: '10%',
+    },
+    sectionBottom: {
+        bottom: '0%',
+        left: '40%',
+    },
+    activeButton: {
+        backgroundColor: 'rgba(0, 100, 0, 0.5)', // Dark green background for active buttons
+    },
+    verticalContainer: {
+        flex: 1,
+        justifyContent: 'space-between',
     },
 });
 

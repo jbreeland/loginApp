@@ -142,10 +142,36 @@ const styles = StyleSheet.create({
     selectedDistanceOption: {
         backgroundColor: '#hhh',
     },
+    puttLabel: {
+        fontSize: 20,
+        textAlign: 'center',
+        marginBottom: 1,
+    },
+    line: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#ddd',
+        marginHorizontal: 10,
+    },
+    lineContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 1,
+    },
+    puttText: {
+        fontSize: 20,
+        textAlign: 'center',
+    },
+    centeredTextContainer: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     rowContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 10,
         width: '100%',
     },
     image: {

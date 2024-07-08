@@ -165,16 +165,22 @@ return (
                         <Text style={styles.buttonText}>+</Text>
                     </TouchableOpacity>
                  </View>
+            </View>
+            </View>
+                <View style={styles.girUpDownContainer}>
+                <View style={styles.halfWidthContainer}>
                  <View style={styles.switchContainer}>
                     <Text style={styles.switchLabel}>GIR: </Text>
                     <Switch style={styles.smallSwitch} value={gir} onValueChange={setGir} />
                 </View>
-            </View>
+            
                 <View style={styles.switchContainer}>
                     <Text style={styles.switchLabel}>Up/Down: </Text>
                     <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
                 </View>
-             </View>
+                </View>
+                </View>
+             
             <View style={styles.lineContainer}>
                 <View style={styles.line} />
                 <Text style={styles.puttText}>Putt 1</Text>

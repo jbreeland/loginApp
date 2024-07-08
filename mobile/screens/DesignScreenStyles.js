@@ -2,15 +2,15 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexshrink: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        marginTop: 10,
+        marginTop: 5,
     },
     holeContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 1,
     },
     arrow: {
         fontSize: 24,
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         fontSize: 14, // Font size for the score in the scorecard
     },
     scoreText: {
-        fontSize: 16, // Font size for the score in the score container
+        fontSize: 30, // Font size for the score in the score container
         fontWeight: 'bold',
         marginHorizontal: 10,
     },
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         transform: [{ scale: 0.75 }],
     },
     scoreLabel: {
-        fontSize: 18,
+        fontSize: 30,
         fontWeight: 'bold',
         marginRight: 10,
     },
@@ -97,11 +97,21 @@ const styles = StyleSheet.create({
         color: '#bbb',
         textAlign: 'center',
     },
+    girUpDownContainer: {
+        flexDirection: 'row',
+        width: '50%', // Adjust the width as needed
+        justifyContent: 'flex-start', // Align to the left
+    },
+    halfWidthContainer: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: 'red',
+    },    
     switchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 1,
-        marginTop: 1,
+        marginTop: 0,
         transform: [{ scale: 0.75 }],
     },
     switchLabel: {
@@ -173,6 +183,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 5,
         width: '100%',
+        marginLeft: 20,
     },
     image: {
         width: 125, // Increased width
@@ -226,46 +237,7 @@ const styles = StyleSheet.create({
         bottom: '0%',
         left: '40%',
     },
-    smallTop: {
-        width: '20%',
-        height: '10%',
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-    },
-    smallTopLeft: {
-        width: '10%',
-        height: '20%',
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-    },
-    smallTopRight: {
-        width: '10%',
-        height: '20%',
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-    },
-    smallLeft: {
-        width: '20%',
-        height: '10%',
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-    },
-    smallRight: {
-        width: '20%',
-        height: '10%',
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-    },
-    smallBottomLeft: {
-        width: '10%',
-        height: '20%',
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-    },
-    smallBottomRight: {
-        width: '10%',
-        height: '20%',
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-    },
-    smallBottom: {
-        width: '20%',
-        height: '10%',
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-    },
+    
     puttMadeButton: {
         position: 'absolute',
         top: '50%',

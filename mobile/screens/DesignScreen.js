@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Switch, ScrollView, Image, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Switch, ScrollView, Image } from 'react-native';
 import styles from './DesignScreenStyles';
 
 const holes = Array.from({ length: 18 }, (_, i) => i + 1);
@@ -10,27 +10,41 @@ const distances = ["0-5 ft", "5-10 ft", "10-15 ft", "15-20 ft", "20-30 ft", "30-
 const DesignScreen = () => {
     const [currentHole, setCurrentHole] = useState(1);
     const [score, setScore] = useState(parValues[0]);
+    const [scores, setScores] = useState(parValues.map(par => par));
     const [gir, setGir] = useState(false);
     const [upDown, setUpDown] = useState(false);
     const [selectedDistance, setSelectedDistance] = useState(null);
     const [misread, setMisread] = useState(false);
     const [activeSlopeButton, setActiveSlopeButton] = useState(null); // State for the active button in slope selection
-    const [activePuttMissButton, setActivePuttMissButton] = useState(null); // State for the active button in putt miss selection
+    
+    const [activePuttMissButton, setActivePuttMissButton] = useState({
+        putt1: null,
+        putt2: null,
+        putt3: null
+    }); // State for the active button in putt miss selection
+    const [puttMade, setPuttMade] = useState({
+        putt1: false,
+        putt2: false,
+        putt3: false
+    });
 
     const [selectedDistance2, setSelectedDistance2] = useState(null);
     const [misread2, setMisread2] = useState(false);
     const [activeSlopeButton2, setActiveSlopeButton2] = useState(null); // State for the active button in slope selection
-    const [activePuttMissButton2, setActivePuttMissButton2] = useState(null); // State for the active button in putt miss selection
-
+    
     const [selectedDistance3, setSelectedDistance3] = useState(null);
     const [misread3, setMisread3] = useState(false);
     const [activeSlopeButton3, setActiveSlopeButton3] = useState(null); // State for the active button in slope selection
-    const [activePuttMissButton3, setActivePuttMissButton3] = useState(null); // State for the active button in putt miss selection
 
     const goToPreviousHole = () => {
         setCurrentHole(prev => {
             const newHole = prev > 1 ? prev - 1 : prev;
-            setScore(parValues[newHole - 1]);
+            setScores(prevScores => {
+                const newScores = [...prevScores];
+                newScores[prev - 1] = score;
+                setScore(newScores[newHole - 1]);
+                return newScores;
+            });
             return newHole;
         });
     };
@@ -38,17 +52,38 @@ const DesignScreen = () => {
     const goToNextHole = () => {
         setCurrentHole(prev => {
             const newHole = prev < 18 ? prev + 1 : prev;
-            setScore(parValues[newHole - 1]);
+            setScores(prevScores => {
+                const newScores = [...prevScores];
+                newScores[prev - 1] = score;
+                setScore(newScores[newHole - 1]);
+                return newScores;
+            });
             return newHole;
         });
     };
-
+    
     const increaseScore = () => {
-        setScore(prev => prev + 1);
+        setScore(prev => {
+            const newScore = prev + 1;
+            setScores(prevScores => {
+                const newScores = [...prevScores];
+                newScores[currentHole - 1] = newScore;
+                return newScores;
+            });
+            return newScore;
+        });
     };
 
     const decreaseScore = () => {
-        setScore(prev => (prev > 1 ? prev - 1 : 1));
+        setScore(prev => {
+            const newScore = prev > 1 ? prev - 1 : 1;
+            setScores(prevScores => {
+                const newScores = [...prevScores];
+                newScores[currentHole - 1] = newScore;
+                return newScores;
+            });
+            return newScore;
+        });
     };
 
     const getVisibleHoles = () => {
@@ -61,401 +96,415 @@ const DesignScreen = () => {
         }
     };
 
-    const handleSlopePress = (section) => {
-        Alert.alert(`Slope section pressed: ${section}`);
-        setActiveSlopeButton(section); // Set the active button in slope selection
-    };
+ const handleSlopePress = (section, puttNumber) => {
+    //Alert.alert(`Slope section pressed: ${section}`);
+    if (puttNumber === 1) {
+        setActiveSlopeButton(section); // Set the active button in slope selection for putt 1
+    } else if (puttNumber === 2) {
+        setActiveSlopeButton2(section); // Set the active button in slope selection for putt 2
+    } else if (puttNumber === 3) {
+        setActiveSlopeButton3(section); // Set the active button in slope selection for putt 3
+    }
+};
 
-    const handlePuttMissPress = (section) => {
-        Alert.alert(`Putt miss section pressed: ${section}`);
-        setActivePuttMissButton(section); // Set the active button in putt miss selection
-    };
+const handlePuttMissPress = (section, puttNumber) => {
+    //Alert.alert(`Putt miss section pressed: ${section}`);
+    setActivePuttMissButton(prev => ({ ...prev, [`putt${puttNumber}`]: section }));
+    setPuttMade(prev => ({ ...prev, [`putt${puttNumber}`]: false })); // Deselect putt made if a miss is selected
+};
 
-    const handleSlopePress2 = (section) => {
-        Alert.alert(`Slope section pressed: ${section}`);
-        setActiveSlopeButton2(section); // Set the active button in slope selection
-    };
+const handlePuttMadePress = (puttNumber) => {
+    setPuttMade(prev => ({ ...prev, [`putt${puttNumber}`]: !prev[`putt${puttNumber}`] }));
+    setActivePuttMissButton(prev => ({ ...prev, [`putt${puttNumber}`]: null })); // Deselect putt miss if putt made is selected
+};
 
-    const handlePuttMissPress2 = (section) => {
-        Alert.alert(`Putt miss section pressed: ${section}`);
-        setActivePuttMissButton2(section); // Set the active button in putt miss selection
-    };
+const handleHoleSelection = (hole) => {
+    setCurrentHole(hole);
+    setScore(scores[hole - 1]);
+};
 
-    const handleSlopePress3 = (section) => {
-        Alert.alert(`Slope section pressed: ${section}`);
-        setActiveSlopeButton3(section); // Set the active button in slope selection
-    };
-
-    const handlePuttMissPress3 = (section) => {
-        Alert.alert(`Putt miss section pressed: ${section}`);
-        setActivePuttMissButton3(section); // Set the active button in putt miss selection
-    };
-
-    return (
-        <View style={styles.container}>
+return (
+    <>
+         <View style={styles.container}>
+         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={goToPreviousHole}>
+                <Text style={styles.arrow}>◀</Text>
+            </TouchableOpacity>
             <View style={styles.holeContainer}>
-                <TouchableOpacity onPress={goToPreviousHole}>
-                    <Text style={styles.arrow}>◀</Text>
-                </TouchableOpacity>
-                <View style={styles.holeNumbers}>
-                    {getVisibleHoles().map(hole => (
-                        <View
-                            key={hole}
-                            style={[
-                                styles.hole,
-                                currentHole === hole && styles.currentHole
-                            ]}
-                        >
+                {getVisibleHoles().map(hole => (
+                    <TouchableOpacity key={hole} onPress={() => handleHoleSelection(hole)}>
+                        <View style={[
+                            styles.hole,
+                            currentHole === hole && styles.currentHole
+                        ]}>
                             <Text style={styles.holeText}>{hole}</Text>
                             <View style={styles.separator} />
                             <Text style={styles.watermark}>Par</Text>
                             <Text style={styles.parText}>{parValues[hole - 1]}</Text>
                             <View style={styles.separator} />
                             <Text style={styles.watermark}>Score</Text>
-                            <Text style={styles.scoreCardText}>{tempScores[hole - 1]}</Text>
+                            <Text style={styles.scoreCardText}>{scores[hole - 1]}</Text> 
                         </View>
-                    ))}
-                </View>
-                <TouchableOpacity onPress={goToNextHole}>
-                    <Text style={styles.arrow}>▶</Text>
-                </TouchableOpacity>
+                    </TouchableOpacity>
+                 ))}
             </View>
-            <View style={styles.content}>
-                <View style={styles.alignedContainer}>
-                    <View style={styles.scoreContainer}>
-                        <Text style={styles.scoreLabel}>Score: </Text>
-                        <TouchableOpacity style={styles.circleButton} onPress={decreaseScore}>
-                            <Text style={styles.buttonText}>-</Text>
+            <TouchableOpacity onPress={goToNextHole}>
+                <Text style={styles.arrow}>▶</Text>
+            </TouchableOpacity>
+         </View>
+    
+       
+            <View style={styles.alignedContainer}>
+                <View style={styles.scoreContainer}>
+                    <Text style={styles.scoreLabel}>Score: </Text>
+                    <TouchableOpacity style={styles.circleButton} onPress={decreaseScore}>
+                        <Text style={styles.buttonText}>-</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.scoreText}>{score}</Text>
+                    <TouchableOpacity style={styles.circleButton} onPress={increaseScore}>
+                        <Text style={styles.buttonText}>+</Text>
+                    </TouchableOpacity>
+                 </View>
+                 <View style={styles.switchContainer}>
+                    <Text style={styles.switchLabel}>GIR: </Text>
+                    <Switch style={styles.smallSwitch} value={gir} onValueChange={setGir} />
+                </View>
+            </View>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.switchLabel}>Up/Down: </Text>
+                    <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
+                </View>
+             </View>
+            <View style={styles.lineContainer}>
+                <View style={styles.line} />
+                <Text style={styles.puttText}>Putt 1</Text>
+                <View style={styles.line} />
+            </View>
+            <View style={styles.rowContainer}>
+                <View style={styles.imageContainer}>
+                    <Image source={require('../images/slope.png')} style={styles.image} />
+                    <View style={styles.overlayContainer}>
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionTop, activeSlopeButton === 'top' && styles.activeButton]}
+                            onPress={() => handleSlopePress('top', 1)}
+                         />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionTopLeft, activeSlopeButton === 'top-left' && styles.activeButton]}
+                            onPress={() => handleSlopePress('top-left', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionTopRight, activeSlopeButton === 'top-right' && styles.activeButton]}
+                            onPress={() => handleSlopePress('top-right', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionLeft, activeSlopeButton === 'left' && styles.activeButton]}
+                            onPress={() => handleSlopePress('left', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionRight, activeSlopeButton === 'right' && styles.activeButton]}
+                            onPress={() => handleSlopePress('right', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionBottomLeft, activeSlopeButton === 'bottom-left' && styles.activeButton]}
+                            onPress={() => handleSlopePress('bottom-left', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionBottomRight, activeSlopeButton === 'bottom-right' && styles.activeButton]}
+                            onPress={() => handleSlopePress('bottom-right', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionBottom, activeSlopeButton === 'bottom' && styles.activeButton]}
+                            onPress={() => handleSlopePress('bottom', 1)}
+                        />
+                    </View>
+                </View>
+                <View style={styles.imageContainer}>
+                    <Image source={require('../images/puttmiss.png')} style={styles.image} />
+                    <View style={styles.overlayContainer}>
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionTop, activePuttMissButton.putt1 === 'long' && styles.activeButton]}
+                            onPress={() => handlePuttMissPress('long', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionTopLeft, activePuttMissButton.putt1 === 'long-left' && styles.activeButton]}
+                            onPress={() => handlePuttMissPress('long-left', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionTopRight, activePuttMissButton.putt1 === 'long-right' && styles.activeButton]}
+                            onPress={() => handlePuttMissPress('long-right', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionLeft, activePuttMissButton.putt1 === 'left' && styles.activeButton]}
+                            onPress={() => handlePuttMissPress('left', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionRight, activePuttMissButton.putt1 === 'right' && styles.activeButton]}
+                            onPress={() => handlePuttMissPress('right', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionBottomLeft, activePuttMissButton.putt1 === 'short-left' && styles.activeButton]}
+                            onPress={() => handlePuttMissPress('short-left', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionBottomRight, activePuttMissButton.putt1 === 'short-right' && styles.activeButton]}
+                            onPress={() => handlePuttMissPress('short-right', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.overlaySection, styles.sectionBottom, activePuttMissButton.putt1 === 'short' && styles.activeButton]}
+                            onPress={() => handlePuttMissPress('short', 1)}
+                        />
+                        <TouchableOpacity
+                            style={[styles.puttMadeButton, puttMade.putt1 && styles.activeButton]}
+                            onPress={() => handlePuttMadePress(1)}>
+                            {puttMade.putt1 && <View style={styles.overlayCircle} />}
                         </TouchableOpacity>
-                        <Text style={styles.scoreText}>{score}</Text>
-                        <TouchableOpacity style={styles.circleButton} onPress={increaseScore}>
-                            <Text style={styles.buttonText}>+</Text>
-                        </TouchableOpacity>
                     </View>
+                 </View>
+                 <View style={styles.verticalContainer}>
                     <View style={styles.switchContainer}>
-                        <Text style={styles.switchLabel}>GIR: </Text>
-                        <Switch style={styles.smallSwitch} value={gir} onValueChange={setGir} />
+                        <Text style={styles.switchLabel}>Misread: </Text>
+                        <Switch style={styles.smallSwitch} value={misread} onValueChange={setMisread} />
                     </View>
-                    <View style={styles.switchContainer}>
-                        <Text style={styles.switchLabel}>Up/Down: </Text>
-                        <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
+                    <View style={styles.distanceContainer}>
+                        <Text style={styles.distanceLabel}>Putt Distance: </Text>
+                        <ScrollView style={styles.scrollBox}>
+                            {distances.map((distance, index) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    style={[
+                                        styles.distanceOption,
+                                        selectedDistance === distance && styles.selectedDistanceOption
+                                    ]}
+                                    onPress={() => setSelectedDistance(distance)}
+                                >
+                                    <Text style={styles.distanceOptionText}>{distance}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
                     </View>
                 </View>
-                <View style={styles.lineContainer}>
-                    <View style={styles.line} />
-                    <Text style={styles.puttText}>Putt 1</Text>
-                    <View style={styles.line} />
+            </View>
+         
+        <View style={styles.lineContainer}>
+            <View style={styles.line} />
+            <Text style={styles.puttText}>Putt 2</Text>
+            <View style={styles.line} />
+        </View>
+        <View style={styles.rowContainer}>
+            <View style={styles.imageContainer}>
+                <Image source={require('../images/slope.png')} style={styles.image} />
+                <View style={styles.overlayContainer}>
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTop, activeSlopeButton2 === 'top' && styles.activeButton]}
+                        onPress={() => handleSlopePress('top', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTopLeft, activeSlopeButton2 === 'top-left' && styles.activeButton]}
+                        onPress={() => handleSlopePress('top-left', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTopRight, activeSlopeButton2 === 'top-right' && styles.activeButton]}
+                        onPress={() => handleSlopePress('top-right', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionLeft, activeSlopeButton2 === 'left' && styles.activeButton]}
+                        onPress={() => handleSlopePress('left', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionRight, activeSlopeButton2 === 'right' && styles.activeButton]}
+                        onPress={() => handleSlopePress('right', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottomLeft, activeSlopeButton2 === 'bottom-left' && styles.activeButton]}
+                        onPress={() => handleSlopePress('bottom-left', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection,                         styles.sectionBottomRight, activeSlopeButton2 === 'bottom-right' && styles.activeButton]}
+                        onPress={() => handleSlopePress('bottom-right', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottom, activeSlopeButton2 === 'bottom' && styles.activeButton]}
+                        onPress={() => handleSlopePress('bottom', 2)}
+                    />
                 </View>
-                <View style={styles.rowContainer}>
-                    <View style={styles.imageContainer}>
-                        <Image source={require('../images/slope.png')} style={styles.image} />
-                        <View style={styles.overlayContainer}>
-                                <TouchableOpacity
-                                    style={[styles.overlaySection, styles.sectionTop, activeSlopeButton === 'top' && styles.activeButton]}
-                                    onPress={() => handleSlopePress('top')}
-                                />
-                                <TouchableOpacity
-                                    style={[styles.overlaySection, styles.sectionTopLeft, activeSlopeButton === 'top-left' && styles.activeButton]}
-                                    onPress={() => handleSlopePress('top-left')}
-                                />
-                                <TouchableOpacity
-                                    style={[styles.overlaySection, styles.sectionTopRight, activeSlopeButton === 'top-right' && styles.activeButton]}
-                                    onPress={() => handleSlopePress('top-right')}
-                                />
-                                <TouchableOpacity
-                                    style={[styles.overlaySection, styles.sectionLeft, activeSlopeButton === 'left' && styles.activeButton]}
-                                    onPress={() => handleSlopePress('left')}
-                                />
-                                <TouchableOpacity
-                                    style={[styles.overlaySection, styles.sectionRight, activeSlopeButton === 'right' && styles.activeButton]}
-                                    onPress={() => handleSlopePress('right')}
-                                />
-                                <TouchableOpacity
-                                    style={[styles.overlaySection, styles.sectionBottomLeft, activeSlopeButton === 'bottom-left' && styles.activeButton]}
-                                    onPress={() => handleSlopePress('bottom-left')}
-                                />
-                                <TouchableOpacity
-                                    style={[styles.overlaySection, styles.sectionBottomRight, activeSlopeButton === 'bottom-right' && styles.activeButton]}
-                                    onPress={() => handleSlopePress('bottom-right')}
-                                />
-                                <TouchableOpacity
-                                    style={[styles.overlaySection, styles.sectionBottom, activeSlopeButton === 'bottom' && styles.activeButton]}
-                                    onPress={() => handleSlopePress('bottom')}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.imageContainer}>
-                        <Image source={require('../images/puttmiss.png')} style={styles.image} />
-                        <View style={styles.overlayContainer}>
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTop, activePuttMissButton === 'long' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress('long')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTopLeft, activePuttMissButton === 'long-left' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress('long-left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTopRight, activePuttMissButton === 'long-right' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress('long-right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionLeft, activePuttMissButton === 'left' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress('left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionRight, activePuttMissButton === 'right' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress('right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottomLeft, activePuttMissButton === 'short-left' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress('short-left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottomRight, activePuttMissButton === 'short-right' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress('short-right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottom, activePuttMissButton === 'short' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress('short')}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.verticalContainer}>
-                        <View style={styles.switchContainer}>
-                            <Text style={styles.switchLabel}>Misread: </Text>
-                            <Switch style={styles.smallSwitch} value={misread} onValueChange={setMisread} />
-                        </View>
-                        <View style={styles.distanceContainer}>
-                            <Text style={styles.distanceLabel}>Putt Distance: </Text>
-                            <ScrollView style={styles.scrollBox}> 
-                                {distances.map((distance, index) => (
-                                    <TouchableOpacity
-                                        key={index}
-                                        style={[
-                                            styles.distanceOption,
-                                            selectedDistance === distance && styles.selectedDistanceOption
-                                        ]}
-                                        onPress={() => setSelectedDistance(distance)}
-                                    >
-                                        <Text style={styles.distanceOptionText}>{distance}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
-                        </View>
-                    </View>
+            </View>
+            <View style={styles.imageContainer}>
+                <Image source={require('../images/puttmiss.png')} style={styles.image} />
+                <View style={styles.overlayContainer}>
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTop, activePuttMissButton.putt2 === 'long' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('long', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTopLeft, activePuttMissButton.putt2 === 'long-left' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('long-left', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTopRight, activePuttMissButton.putt2 === 'long-right' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('long-right', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionLeft, activePuttMissButton.putt2 === 'left' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('left', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionRight, activePuttMissButton.putt2 === 'right' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('right', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottomLeft, activePuttMissButton.putt2 === 'short-left' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('short-left', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottomRight, activePuttMissButton.putt2 === 'short-right' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('short-right', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottom, activePuttMissButton.putt2 === 'short' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('short', 2)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.puttMadeButton, puttMade.putt2 && styles.activeButton]}
+                        onPress={() => handlePuttMadePress(2)}>
+                        {puttMade.putt2 && <View style={styles.overlayCircle} />}
+                    </TouchableOpacity>
                 </View>
-                <View style={styles.lineContainer}>
-                    <View style={styles.line} />
-                    <Text style={styles.puttText}>Putt 2</Text>
-                    <View style={styles.line} />
+            </View>                    
+            <View style={styles.verticalContainer}>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.switchLabel}>Misread: </Text>
+                    <Switch style={styles.smallSwitch} value={misread} onValueChange={setMisread} />
                 </View>
-                <View style={styles.rowContainer}>
-                    <View style={styles.imageContainer}>
-                        <Image source={require('../images/slope.png')} style={styles.image} />
-                        <View style={styles.overlayContainer}>
+                <View style={styles.distanceContainer}>
+                    <Text style={styles.distanceLabel}>Putt Distance: </Text>
+                    <ScrollView style={styles.scrollBox}>
+                        {distances.map((distance, index) => (
                             <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTop, activeSlopeButton2 === 'top' && styles.activeButton]}
-                                onPress={() => handleSlopePress2('top')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTopLeft, activeSlopeButton2 === 'top-left' && styles.activeButton]}
-                                onPress={() => handleSlopePress2('top-left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTopRight, activeSlopeButton2 === 'top-right' && styles.activeButton]}
-                                onPress={() => handleSlopePress2('top-right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionLeft, activeSlopeButton2 === 'left' && styles.activeButton]}
-                                onPress={() => handleSlopePress2('left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionRight, activeSlopeButton2 === 'right' && styles.activeButton]}
-                                onPress={() => handleSlopePress2('right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottomLeft, activeSlopeButton2 === 'bottom-left' && styles.activeButton]}
-                                onPress={() => handleSlopePress2('bottom-left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottomRight, activeSlopeButton2 === 'bottom-right' && styles.activeButton]}
-                                onPress={() => handleSlopePress2('bottom-right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottom, activeSlopeButton2 === 'bottom' && styles.activeButton]}
-                                onPress={() => handleSlopePress2('bottom')}
-                            />
-                                                </View>
-                    </View>
-                    <View style={styles.imageContainer}>
-                        <Image source={require('../images/puttmiss.png')} style={styles.image} />
-                        <View style={styles.overlayContainer}>
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTop, activePuttMissButton2 === 'long' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress2('long')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTopLeft, activePuttMissButton2 === 'long-left' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress2('long-left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTopRight, activePuttMissButton2 === 'long-right' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress2('long-right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionLeft, activePuttMissButton2 === 'left' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress2('left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionRight, activePuttMissButton2 === 'right' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress2('right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottomLeft, activePuttMissButton2 === 'short-left' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress2('short-left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottomRight, activePuttMissButton2 === 'short-right' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress2('short-right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottom, activePuttMissButton2 === 'short' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress2('short')}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.verticalContainer}>
-                        <View style={styles.switchContainer}>
-                            <Text style={styles.switchLabel}>Misread: </Text>
-                            <Switch style={styles.smallSwitch} value={misread} onValueChange={setMisread} />
-                        </View>
-                        <View style={styles.distanceContainer}>
-                            <Text style={styles.distanceLabel}>Putt Distance: </Text>
-                            <ScrollView style={styles.scrollBox}>
-                                {distances.map((distance, index) => (
-                                    <TouchableOpacity
-                                        key={index}
-                                        style={[
-                                            styles.distanceOption,
-                                            selectedDistance === distance && styles.selectedDistanceOption
-                                        ]}
-                                        onPress={() => setSelectedDistance(distance)}
-                                    >
-                                        <Text style={styles.distanceOptionText}>{distance}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.lineContainer}>
-                    <View style={styles.line} />
-                    <Text style={styles.puttText}>Putt 3</Text>
-                    <View style={styles.line} />
-                </View>
-                <View style={styles.rowContainer}>
-                    <View style={styles.imageContainer}>
-                        <Image source={require('../images/slope.png')} style={styles.image} />
-                        <View style={styles.overlayContainer}>
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTop, activeSlopeButton3 === 'top' && styles.activeButton]}
-                                onPress={() => handleSlopePress3('top')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTopLeft, activeSlopeButton3 === 'top-left' && styles.activeButton]}
-                                onPress={() => handleSlopePress3('top-left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTopRight, activeSlopeButton3 === 'top-right' && styles.activeButton]}
-                                onPress={() => handleSlopePress3('top-right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionLeft, activeSlopeButton3 === 'left' && styles.activeButton]}
-                                onPress={() => handleSlopePress3('left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionRight, activeSlopeButton3 === 'right' && styles.activeButton]}
-                                onPress={() => handleSlopePress3('right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottomLeft, activeSlopeButton3 === 'bottom-left' && styles.activeButton]}
-                                onPress={() => handleSlopePress3('bottom-left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottomRight, activeSlopeButton3 === 'bottom-right' && styles.activeButton]}
-                                onPress={() => handleSlopePress3('bottom-right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottom, activeSlopeButton3 === 'bottom' && styles.activeButton]}
-                                onPress={() => handleSlopePress3('bottom')}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.imageContainer}>
-                        <Image source={require('../images/puttmiss.png')} style={styles.image} />
-                        <View style={styles.overlayContainer}>
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTop, activePuttMissButton3 === 'long' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress3('long')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTopLeft, activePuttMissButton3 === 'long-left' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress3('long-left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionTopRight, activePuttMissButton3 === 'long-right' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress3('long-right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionLeft, activePuttMissButton3 === 'left' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress3('left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionRight, activePuttMissButton3 === 'right' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress3('right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottomLeft, activePuttMissButton3 === 'short-left' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress3('short-left')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottomRight, activePuttMissButton3 === 'short-right' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress3('short-right')}
-                            />
-                            <TouchableOpacity
-                                style={[styles.overlaySection, styles.sectionBottom, activePuttMissButton3 === 'short' && styles.activeButton]}
-                                onPress={() => handlePuttMissPress3('short')}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.verticalContainer}>
-                        <View style={styles.switchContainer}>
-                            <Text style={styles.switchLabel}>Misread: </Text>
-                            <Switch style={styles.smallSwitch} value={misread} onValueChange={setMisread} />
-                        </View>
-                        <View style={styles.distanceContainer}>
-                            <Text style={styles.distanceLabel}>Putt Distance: </Text>
-                            <ScrollView style={styles.scrollBox}>
-                                {distances.map((distance, index) => (
-                                    <TouchableOpacity
-                                        key={index}
-                                        style={[
-                                            styles.distanceOption,
-                                            selectedDistance === distance && styles.selectedDistanceOption
-                                        ]}
-                                        onPress={() => setSelectedDistance(distance)}
-                                    >
-                                        <Text style={styles.distanceOptionText}>{distance}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
-                        </View>
-                    </View>
+                                key={index}
+                                style={[
+                                    styles.distanceOption,
+                                    selectedDistance === distance && styles.selectedDistanceOption
+                                ]}
+                                onPress={() => setSelectedDistance(distance)}
+                            >
+                                <Text style={styles.distanceOptionText}>{distance}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
                 </View>
             </View>
         </View>
-    );
-};
+        <View style={styles.lineContainer}>
+            <View style={styles.line} />
+            <Text style={styles.puttText}>Putt 3</Text>
+            <View style={styles.line} />
+        </View>
+        <View style={styles.rowContainer}>
+            <View style={styles.imageContainer}>
+                <Image source={require('../images/slope.png')} style={styles.image} />
+                <View style={styles.overlayContainer}>
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTop, activeSlopeButton3 === 'top' && styles.activeButton]}
+                        onPress={() => handleSlopePress('top', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTopLeft, activeSlopeButton3 === 'top-left' && styles.activeButton]}
+                        onPress={() => handleSlopePress('top-left', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTopRight, activeSlopeButton3 === 'top-right' && styles.activeButton]}
+                        onPress={() => handleSlopePress('top-right', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionLeft, activeSlopeButton3 === 'left' && styles.activeButton]}
+                        onPress={() => handleSlopePress('left', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionRight, activeSlopeButton3 === 'right' && styles.activeButton]}
+                        onPress={() => handleSlopePress('right', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottomLeft, activeSlopeButton3 === 'bottom-left' && styles.activeButton]}
+                        onPress={() => handleSlopePress('bottom-left', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottomRight, activeSlopeButton3 === 'bottom-right' && styles.activeButton]}
+                        onPress={() => handleSlopePress('bottom-right', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottom, activeSlopeButton3 === 'bottom' && styles.activeButton]}
+                        onPress={() => handleSlopePress3('bottom', 3)}
+                    />
+                </View>
+            </View>
+            <View style={styles.imageContainer}>
+                <Image source={require('../images/puttmiss.png')} style={styles.image} />
+                <View style={styles.overlayContainer}>
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTop, activePuttMissButton.putt3 === 'long' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('long', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTopLeft, activePuttMissButton.putt3 === 'long-left' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('long-left', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionTopRight, activePuttMissButton.putt3 === 'long-right' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('long-right', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionLeft, activePuttMissButton.putt3 === 'left' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('left', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionRight, activePuttMissButton.putt3 === 'right' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('right', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottomLeft, activePuttMissButton.putt3 === 'short-left' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('short-left', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottomRight, activePuttMissButton.putt3 === 'short-right' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('short-right', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.overlaySection, styles.sectionBottom, activePuttMissButton.putt3 === 'short' && styles.activeButton]}
+                        onPress={() => handlePuttMissPress('short', 3)}
+                    />
+                    <TouchableOpacity
+                        style={[styles.puttMadeButton, puttMade.putt3 && styles.activeButton]}
+                        onPress={() => handlePuttMadePress(3)}>
+                        {puttMade.putt3 && <View style={styles.overlayCircle} />}
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View style={styles.verticalContainer}>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.switchLabel}>Misread: </Text>
+                    <Switch style={styles.smallSwitch} value={misread} onValueChange={setMisread} />
+                </View>
+                <View style={styles.distanceContainer}>
+                    <Text style={styles.distanceLabel}>Putt Distance: </Text>
+                    <ScrollView style={styles.scrollBox}>
+                        {distances.map((distance, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                style={[
+                                    styles.distanceOption,
+                                    selectedDistance === distance && styles.selectedDistanceOption
+                                ]}
+                                onPress={() => setSelectedDistance(distance)}
+                            >
+                                <Text style={styles.distanceOptionText}>{distance}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>  
+            </View> 
+        </View> 
+    </>     
+); 
+}; 
 
 export default DesignScreen;

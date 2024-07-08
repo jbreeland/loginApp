@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 10,
     },
     holeContainer: {
         flexDirection: 'row',
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     rowContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 10,
+        marginTop: 5,
         width: '100%',
     },
     image: {
@@ -226,8 +226,65 @@ const styles = StyleSheet.create({
         bottom: '0%',
         left: '40%',
     },
+    smallTop: {
+        width: '20%',
+        height: '10%',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+    smallTopLeft: {
+        width: '10%',
+        height: '20%',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+    smallTopRight: {
+        width: '10%',
+        height: '20%',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+    smallLeft: {
+        width: '20%',
+        height: '10%',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+    smallRight: {
+        width: '20%',
+        height: '10%',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+    smallBottomLeft: {
+        width: '10%',
+        height: '20%',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+    smallBottomRight: {
+        width: '10%',
+        height: '20%',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+    smallBottom: {
+        width: '20%',
+        height: '10%',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+    puttMadeButton: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        width: 50,
+        height: 50,
+        transform: [{ translateX: -25 }, { translateY: -25 }],
+        borderRadius: 25,
+        backgroundColor: 'transparent', // Initially transparent
+    },
     activeButton: {
         backgroundColor: 'rgba(0, 100, 0, 0.5)', // Dark green background for active buttons
+    },
+    overlayCircle: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        borderRadius: 25, // Ensures it is a circle
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     verticalContainer: {
         flex: 1,

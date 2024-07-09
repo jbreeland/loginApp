@@ -97,16 +97,40 @@ const styles = StyleSheet.create({
         color: '#bbb',
         textAlign: 'center',
     },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '95%',
+    },
     girUpDownContainer: {
         flexDirection: 'row',
-        width: '50%', // Adjust the width as needed
-        justifyContent: 'flex-start', // Align to the left
+        width: '100%', // Adjust the width as needed
+        justifyContent: 'space-between', // Align to the left
     },
     halfWidthContainer: {
         flex: 1,
+
+    },  
+    approachShotContainer: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        width: '45%', // Adjust the width as needed
+        paddingLeft: 10,
+    },
+    approachLabel: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    distanceInput: {
+        height: 30,
+        borderColor: '#ccc',
         borderWidth: 1,
-        borderColor: 'red',
-    },    
+        borderRadius: 10,
+        paddingLeft: 10,
+        width: '25%',
+    },
     switchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -130,13 +154,23 @@ const styles = StyleSheet.create({
         transform: [{ scale: 0.75 }],
     },
     distanceLabel: {
-        fontSize: 16,
+        fontSize: 16, //putt distance 
         fontWeight: 'bold',
         marginRight: 10,
+       
+    },
+    clubScrollBox: {
+        height: 30, // Adjust the height as needed
+        
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10,
+        marginBottom: 5, // Add margin bottom to separate it from the next element
+        marginLeft: 50,
     },
     scrollBox: {
         height: 40,
-        width: 100,
+        width: 100, // putt distance
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 10,

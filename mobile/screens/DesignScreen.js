@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Switch, ScrollView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Switch, ScrollView, Image, TextInput } from 'react-native';
 import styles from './DesignScreenStyles';
 
 const holes = Array.from({ length: 18 }, (_, i) => i + 1);
@@ -14,9 +14,11 @@ const DesignScreen = () => {
     const [gir, setGir] = useState(false);
     const [upDown, setUpDown] = useState(false);
     const [selectedDistance, setSelectedDistance] = useState(null);
-    const [misread, setMisread] = useState(false);
+    const [misread1, setMisread1] = useState(false);
     const [activeSlopeButton, setActiveSlopeButton] = useState(null); // State for the active button in slope selection
-    
+    const [approachDistance, setApproachDistance] = useState('');
+    const [selectedClub, setSelectedClub] = useState('');
+
     const [activePuttMissButton, setActivePuttMissButton] = useState({
         putt1: null,
         putt2: null,
@@ -154,33 +156,52 @@ return (
          </View>
     
        
-            <View style={styles.alignedContainer}>
-                <View style={styles.scoreContainer}>
-                    <Text style={styles.scoreLabel}>Score: </Text>
-                    <TouchableOpacity style={styles.circleButton} onPress={decreaseScore}>
-                        <Text style={styles.buttonText}>-</Text>
+         <View style={styles.alignedContainer}>
+    <View style={styles.scoreContainer}>
+        <Text style={styles.scoreLabel}>Score: </Text>
+        <TouchableOpacity style={styles.circleButton} onPress={decreaseScore}>
+            <Text style={styles.buttonText}>-</Text>
+        </TouchableOpacity>
+        <Text style={styles.scoreText}>{score}</Text>
+        <TouchableOpacity style={styles.circleButton} onPress={increaseScore}>
+            <Text style={styles.buttonText}>+</Text>
+        </TouchableOpacity>
+    </View>
+</View>
+<View style={styles.girUpDownContainer}>
+    <View style={styles.halfWidthContainer}>
+        <View style={styles.row}>
+            <Text style={styles.switchLabel}>  GIR:               </Text>
+            <Switch style={styles.smallSwitch} value={gir} onValueChange={setGir} />
+            <Text style={styles.switchLabel}>     Club:</Text>
+            <ScrollView style={styles.clubScrollBox}>
+                {['Driver', '3W', '5W', 'Hybrid', 'Iron', 'Wedge', 'Putter'].map((club, index) => (
+                    <TouchableOpacity
+                        key={index}
+                        style={styles.distanceOption}
+                        onPress={() => setSelectedClub(club)}
+                    >
+                        <Text style={styles.distanceOptionText}>{club}</Text>
                     </TouchableOpacity>
-                    <Text style={styles.scoreText}>{score}</Text>
-                    <TouchableOpacity style={styles.circleButton} onPress={increaseScore}>
-                        <Text style={styles.buttonText}>+</Text>
-                    </TouchableOpacity>
-                 </View>
-            </View>
-            </View>
-                <View style={styles.girUpDownContainer}>
-                <View style={styles.halfWidthContainer}>
-                 <View style={styles.switchContainer}>
-                    <Text style={styles.switchLabel}>GIR: </Text>
-                    <Switch style={styles.smallSwitch} value={gir} onValueChange={setGir} />
-                </View>
-            
-                <View style={styles.switchContainer}>
-                    <Text style={styles.switchLabel}>Up/Down: </Text>
-                    <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
-                </View>
-                </View>
-                </View>
-             
+                ))}
+            </ScrollView>
+        </View>
+        <View style={styles.row}>
+            <Text style={styles.switchLabel}>  Up/Down:</Text>
+            <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
+            <Text style={styles.switchLabel}>Distance: </Text>
+            <TextInput
+                style={styles.distanceInput}
+                keyboardType="numeric"
+                value={approachDistance}
+                onChangeText={setApproachDistance}
+                placeholder="Enter distance"
+            />
+        </View>
+    </View>
+</View>
+</View>
+    
             <View style={styles.lineContainer}>
                 <View style={styles.line} />
                 <Text style={styles.puttText}>Putt 1</Text>
@@ -269,7 +290,7 @@ return (
                  <View style={styles.verticalContainer}>
                     <View style={styles.switchContainer}>
                         <Text style={styles.switchLabel}>Misread: </Text>
-                        <Switch style={styles.smallSwitch} value={misread} onValueChange={setMisread} />
+                        <Switch style={styles.smallSwitch} value={misread1} onValueChange={setMisread1} />
                     </View>
                     <View style={styles.distanceContainer}>
                         <Text style={styles.distanceLabel}>Putt Distance: </Text>
@@ -379,7 +400,7 @@ return (
             <View style={styles.verticalContainer}>
                 <View style={styles.switchContainer}>
                     <Text style={styles.switchLabel}>Misread: </Text>
-                    <Switch style={styles.smallSwitch} value={misread} onValueChange={setMisread} />
+                    <Switch style={styles.smallSwitch} value={misread2} onValueChange={setMisread2} />
                 </View>
                 <View style={styles.distanceContainer}>
                     <Text style={styles.distanceLabel}>Putt Distance: </Text>
@@ -488,7 +509,7 @@ return (
             <View style={styles.verticalContainer}>
                 <View style={styles.switchContainer}>
                     <Text style={styles.switchLabel}>Misread: </Text>
-                    <Switch style={styles.smallSwitch} value={misread} onValueChange={setMisread} />
+                    <Switch style={styles.smallSwitch} value={misread3} onValueChange={setMisread3} />
                 </View>
                 <View style={styles.distanceContainer}>
                     <Text style={styles.distanceLabel}>Putt Distance: </Text>

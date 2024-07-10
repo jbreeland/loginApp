@@ -7,85 +7,51 @@ const parValues = [4, 4, 3, 4, 5, 3, 4, 5, 4, 4, 5, 3, 4, 4, 3, 5, 4, 4]; // Exa
 const tempScores = [4, 5, 3, 4, 6, 3, 5, 5, 4, 4, 6, 3, 4, 5, 3, 6, 4, 5]; // Temporary scores, replace with actual user inputs
 const distances = ["0-5 ft", "5-10 ft", "10-15 ft", "15-20 ft", "20-30 ft", "30-40 ft", "40 ft +"];
 
+
 const DesignScreen = () => {
-    const [currentHole, setCurrentHole] = useState(1);
-    const [score, setScore] = useState(parValues[0]);
-    const [scores, setScores] = useState(parValues.map(par => par));
-    const [gir, setGir] = useState(false);
-    const [upDown, setUpDown] = useState(false);
-    const [selectedDistance, setSelectedDistance] = useState(null);
-    const [misread1, setMisread1] = useState(false);
-    const [activeSlopeButton, setActiveSlopeButton] = useState(null); // State for the active button in slope selection
-    const [approachDistance, setApproachDistance] = useState('');
-    const [selectedClub, setSelectedClub] = useState('');
-
-    const [activePuttMissButton, setActivePuttMissButton] = useState({
-        putt1: null,
-        putt2: null,
-        putt3: null
-    }); // State for the active button in putt miss selection
-    const [puttMade, setPuttMade] = useState({
-        putt1: false,
-        putt2: false,
-        putt3: false
-    });
-
-    const [selectedDistance2, setSelectedDistance2] = useState(null);
-    const [misread2, setMisread2] = useState(false);
-    const [activeSlopeButton2, setActiveSlopeButton2] = useState(null); // State for the active button in slope selection
-    
-    const [selectedDistance3, setSelectedDistance3] = useState(null);
-    const [misread3, setMisread3] = useState(false);
-    const [activeSlopeButton3, setActiveSlopeButton3] = useState(null); // State for the active button in slope selection
-
-    const goToPreviousHole = () => {
-        setCurrentHole(prev => {
-            const newHole = prev > 1 ? prev - 1 : prev;
-            setScores(prevScores => {
-                const newScores = [...prevScores];
-                newScores[prev - 1] = score;
-                setScore(newScores[newHole - 1]);
-                return newScores;
-            });
-            return newHole;
-        });
+    const initialHoleData = {
+        score: 0,
+        gir: false,
+        upDown: false,
+        approachDistance: '',
+        selectedClub: '',
+        slopes: { slope1: null, slope2: null, slope3: null },
+        puttMiss: { putt1: null, putt2: null, putt3: null },
+        puttMade: { putt1: false, putt2: false, putt3: false },
+        misread: { misread1: false, misread2: false, misread3: false },
     };
 
+    const [holeData, setHoleData] = useState(
+        holes.reduce((acc, hole) => {
+            acc[hole] = { ...initialHoleData, score: parValues[hole - 1] };
+            return acc;
+        }, {})
+    );
+
+    const [currentHole, setCurrentHole] = useState(1);
+    const [selectedDistance, setSelectedDistance] = useState(null);
+
+    const goToPreviousHole = () => {
+        setCurrentHole(prev => (prev > 1 ? prev - 1 : prev));
+    };
+
+
     const goToNextHole = () => {
-        setCurrentHole(prev => {
-            const newHole = prev < 18 ? prev + 1 : prev;
-            setScores(prevScores => {
-                const newScores = [...prevScores];
-                newScores[prev - 1] = score;
-                setScore(newScores[newHole - 1]);
-                return newScores;
-            });
-            return newHole;
-        });
+        setCurrentHole(prev => (prev < 18 ? prev + 1 : prev));
     };
     
     const increaseScore = () => {
-        setScore(prev => {
-            const newScore = prev + 1;
-            setScores(prevScores => {
-                const newScores = [...prevScores];
-                newScores[currentHole - 1] = newScore;
-                return newScores;
-            });
-            return newScore;
-        });
+        setHoleData((prevState) => ({
+            ...prevState,
+            [currentHole]: { ...prevState[currentHole], score: prevState[currentHole].score + 1 }
+        }));
     };
-
+    
     const decreaseScore = () => {
-        setScore(prev => {
-            const newScore = prev > 1 ? prev - 1 : 1;
-            setScores(prevScores => {
-                const newScores = [...prevScores];
-                newScores[currentHole - 1] = newScore;
-                return newScores;
-            });
-            return newScore;
-        });
+        setHoleData((prevState) => ({
+            ...prevState,
+            [currentHole]: { ...prevState[currentHole], score: Math.max(prevState[currentHole].score - 1, 1) }
+        }));
     };
 
     const getVisibleHoles = () => {
@@ -98,32 +64,81 @@ const DesignScreen = () => {
         }
     };
 
- const handleSlopePress = (section, puttNumber) => {
-    //Alert.alert(`Slope section pressed: ${section}`);
-    if (puttNumber === 1) {
-        setActiveSlopeButton(section); // Set the active button in slope selection for putt 1
-    } else if (puttNumber === 2) {
-        setActiveSlopeButton2(section); // Set the active button in slope selection for putt 2
-    } else if (puttNumber === 3) {
-        setActiveSlopeButton3(section); // Set the active button in slope selection for putt 3
-    }
-};
 
-const handlePuttMissPress = (section, puttNumber) => {
-    //Alert.alert(`Putt miss section pressed: ${section}`);
-    setActivePuttMissButton(prev => ({ ...prev, [`putt${puttNumber}`]: section }));
-    setPuttMade(prev => ({ ...prev, [`putt${puttNumber}`]: false })); // Deselect putt made if a miss is selected
-};
-
-const handlePuttMadePress = (puttNumber) => {
-    setPuttMade(prev => ({ ...prev, [`putt${puttNumber}`]: !prev[`putt${puttNumber}`] }));
-    setActivePuttMissButton(prev => ({ ...prev, [`putt${puttNumber}`]: null })); // Deselect putt miss if putt made is selected
-};
-
-const handleHoleSelection = (hole) => {
-    setCurrentHole(hole);
-    setScore(scores[hole - 1]);
-};
+    const handleGIRChange = (value) => {
+        setHoleData((prevState) => ({
+            ...prevState,
+            [currentHole]: { ...prevState[currentHole], gir: value }
+        }));
+    };
+    
+    const handleUpDownChange = (value) => {
+        setHoleData((prevState) => ({
+            ...prevState,
+            [currentHole]: { ...prevState[currentHole], upDown: value }
+        }));
+    };
+    
+    const handleSlopePress = (section, puttNumber) => {
+        setHoleData((prevState) => ({
+            ...prevState,
+            [currentHole]: {
+                ...prevState[currentHole],
+                slopes: { ...prevState[currentHole].slopes, [`slope${puttNumber}`]: section }
+            }
+        }));
+    };
+    
+    const handlePuttMissPress = (section, puttNumber) => {
+        setHoleData((prevState) => ({
+            ...prevState,
+            [currentHole]: {
+                ...prevState[currentHole],
+                puttMiss: { ...prevState[currentHole].puttMiss, [`putt${puttNumber}`]: section },
+                puttMade: { ...prevState[currentHole].puttMade, [`putt${puttNumber}`]: false }
+            }
+        }));
+    };
+    
+    const handlePuttMadePress = (puttNumber) => {
+        setHoleData((prevState) => ({
+            ...prevState,
+            [currentHole]: {
+                ...prevState[currentHole],
+                puttMade: { ...prevState[currentHole].puttMade, [`putt${puttNumber}`]: !prevState[currentHole].puttMade[`putt${puttNumber}`] },
+                puttMiss: { ...prevState[currentHole].puttMiss, [`putt${puttNumber}`]: null }
+            }
+        }));
+    };
+    
+    const handleMisreadChange = (puttNumber, value) => {
+        setHoleData((prevState) => ({
+            ...prevState,
+            [currentHole]: {
+                ...prevState[currentHole],
+                misread: { ...prevState[currentHole].misread, [`misread${puttNumber}`]: value }
+            }
+        }));
+    };
+    
+    const handleApproachDistanceChange = (value) => {
+        setHoleData((prevState) => ({
+            ...prevState,
+            [currentHole]: { ...prevState[currentHole], approachDistance: value }
+        }));
+    };
+    
+    const handleClubSelection = (club) => {
+        setHoleData((prevState) => ({
+            ...prevState,
+            [currentHole]: { ...prevState[currentHole], selectedClub: club }
+        }));
+    };
+    
+    const handleHoleSelection = (hole) => {
+        setCurrentHole(hole);
+    };
+    
 
 return (
     <>
@@ -145,7 +160,7 @@ return (
                             <Text style={styles.parText}>{parValues[hole - 1]}</Text>
                             <View style={styles.separator} />
                             <Text style={styles.watermark}>Score</Text>
-                            <Text style={styles.scoreCardText}>{scores[hole - 1]}</Text> 
+                            <Text style={styles.scoreCardText}>{holeData[hole].score}</Text> 
                         </View>
                     </TouchableOpacity>
                  ))}
@@ -162,7 +177,7 @@ return (
         <TouchableOpacity style={styles.circleButton} onPress={decreaseScore}>
             <Text style={styles.buttonText}>-</Text>
         </TouchableOpacity>
-        <Text style={styles.scoreText}>{score}</Text>
+        <Text style={styles.scoreText}>{holeData[currentHole].score}</Text>
         <TouchableOpacity style={styles.circleButton} onPress={increaseScore}>
             <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
@@ -172,14 +187,14 @@ return (
     <View style={styles.halfWidthContainer}>
         <View style={styles.row}>
             <Text style={styles.switchLabel}>  GIR:               </Text>
-            <Switch style={styles.smallSwitch} value={gir} onValueChange={setGir} />
+            <Switch style={styles.smallSwitch} value={holeData[currentHole].gir} onValueChange={handleGIRChange} />
             <Text style={styles.switchLabel}>     Club:</Text>
             <ScrollView style={styles.clubScrollBox}>
                 {['Driver', '3W', '5W', 'Hybrid', 'Iron', 'Wedge', 'Putter'].map((club, index) => (
                     <TouchableOpacity
                         key={index}
                         style={styles.distanceOption}
-                        onPress={() => setSelectedClub(club)}
+                        onPress={() => handleClubSelection(club)}
                     >
                         <Text style={styles.distanceOptionText}>{club}</Text>
                     </TouchableOpacity>
@@ -188,13 +203,14 @@ return (
         </View>
         <View style={styles.row}>
             <Text style={styles.switchLabel}>  Up/Down:</Text>
-            <Switch style={styles.smallSwitch} value={upDown} onValueChange={setUpDown} />
+            <Switch style={styles.smallSwitch} value={holeData[currentHole].upDown} onValueChange={handleUpDownChange} />
+
             <Text style={styles.switchLabel}>Distance: </Text>
             <TextInput
                 style={styles.distanceInput}
                 keyboardType="numeric"
-                value={approachDistance}
-                onChangeText={setApproachDistance}
+                value={holeData[currentHole].approachDistance}
+                onChangeText={handleApproachDistanceChange}
                 placeholder="Enter distance"
             />
         </View>
@@ -212,35 +228,35 @@ return (
                     <Image source={require('../images/slope.png')} style={styles.image} />
                     <View style={styles.overlayContainer}>
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionTop, activeSlopeButton === 'top' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionTop, holeData[currentHole].slopes.slope1 === 'top' && styles.activeButton]}
                             onPress={() => handleSlopePress('top', 1)}
                          />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionTopLeft, activeSlopeButton === 'top-left' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionTopLeft, holeData[currentHole].slopes.slope1 === 'top-left' && styles.activeButton]}
                             onPress={() => handleSlopePress('top-left', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionTopRight, activeSlopeButton === 'top-right' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionTopRight, holeData[currentHole].slopes.slope1 === 'top-right' && styles.activeButton]}
                             onPress={() => handleSlopePress('top-right', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionLeft, activeSlopeButton === 'left' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionLeft, holeData[currentHole].slopes.slope1 === 'left' && styles.activeButton]}
                             onPress={() => handleSlopePress('left', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionRight, activeSlopeButton === 'right' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionRight, holeData[currentHole].slopes.slope1 === 'right' && styles.activeButton]}
                             onPress={() => handleSlopePress('right', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionBottomLeft, activeSlopeButton === 'bottom-left' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionBottomLeft, holeData[currentHole].slopes.slope1 === 'bottom-left' && styles.activeButton]}
                             onPress={() => handleSlopePress('bottom-left', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionBottomRight, activeSlopeButton === 'bottom-right' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionBottomRight, holeData[currentHole].slopes.slope1 === 'bottom-right' && styles.activeButton]}
                             onPress={() => handleSlopePress('bottom-right', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionBottom, activeSlopeButton === 'bottom' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionBottom, holeData[currentHole].slopes.slope1 === 'bottom' && styles.activeButton]}
                             onPress={() => handleSlopePress('bottom', 1)}
                         />
                     </View>
@@ -249,48 +265,48 @@ return (
                     <Image source={require('../images/puttmiss.png')} style={styles.image} />
                     <View style={styles.overlayContainer}>
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionTop, activePuttMissButton.putt1 === 'long' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionTop, holeData[currentHole].puttMiss.putt1 === 'long' && styles.activeButton]}
                             onPress={() => handlePuttMissPress('long', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionTopLeft, activePuttMissButton.putt1 === 'long-left' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionTopLeft, holeData[currentHole].puttMiss.putt1 === 'long-left' && styles.activeButton]}
                             onPress={() => handlePuttMissPress('long-left', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionTopRight, activePuttMissButton.putt1 === 'long-right' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionTopRight, holeData[currentHole].puttMiss.putt1 === 'long-right' && styles.activeButton]}
                             onPress={() => handlePuttMissPress('long-right', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionLeft, activePuttMissButton.putt1 === 'left' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionLeft, holeData[currentHole].puttMiss.putt1 === 'left' && styles.activeButton]}
                             onPress={() => handlePuttMissPress('left', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionRight, activePuttMissButton.putt1 === 'right' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionRight, holeData[currentHole].puttMiss.putt1 === 'right' && styles.activeButton]}
                             onPress={() => handlePuttMissPress('right', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionBottomLeft, activePuttMissButton.putt1 === 'short-left' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionBottomLeft, holeData[currentHole].puttMiss.putt1 === 'short-left' && styles.activeButton]}
                             onPress={() => handlePuttMissPress('short-left', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionBottomRight, activePuttMissButton.putt1 === 'short-right' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionBottomRight, holeData[currentHole].puttMiss.putt1 === 'short-right' && styles.activeButton]}
                             onPress={() => handlePuttMissPress('short-right', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.overlaySection, styles.sectionBottom, activePuttMissButton.putt1 === 'short' && styles.activeButton]}
+                            style={[styles.overlaySection, styles.sectionBottom, holeData[currentHole].puttMiss.putt1 === 'short' && styles.activeButton]}
                             onPress={() => handlePuttMissPress('short', 1)}
                         />
                         <TouchableOpacity
-                            style={[styles.puttMadeButton, puttMade.putt1 && styles.activeButton]}
+                            style={[styles.puttMadeButton, holeData[currentHole].puttMade.putt1 && styles.activeButton]}
                             onPress={() => handlePuttMadePress(1)}>
-                            {puttMade.putt1 && <View style={styles.overlayCircle} />}
+                            {holeData[currentHole].puttMade.putt1 && <View style={styles.overlayCircle} />}
                         </TouchableOpacity>
                     </View>
                  </View>
                  <View style={styles.verticalContainer}>
                     <View style={styles.switchContainer}>
                         <Text style={styles.switchLabel}>Misread: </Text>
-                        <Switch style={styles.smallSwitch} value={misread1} onValueChange={setMisread1} />
+                        <Switch style={styles.smallSwitch} value={holeData[currentHole].misread.misread1} onValueChange={(value) => handleMisreadChange(1, value)} />
                     </View>
                     <View style={styles.distanceContainer}>
                         <Text style={styles.distanceLabel}>Putt Distance: </Text>
@@ -322,35 +338,35 @@ return (
                 <Image source={require('../images/slope.png')} style={styles.image} />
                 <View style={styles.overlayContainer}>
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTop, activeSlopeButton2 === 'top' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTop, holeData[currentHole].slopes.slope2 === 'top' && styles.activeButton]}
                         onPress={() => handleSlopePress('top', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTopLeft, activeSlopeButton2 === 'top-left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTopLeft, holeData[currentHole].slopes.slope2 === 'top-left' && styles.activeButton]}
                         onPress={() => handleSlopePress('top-left', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTopRight, activeSlopeButton2 === 'top-right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTopRight, holeData[currentHole].slopes.slope2 === 'top-right' && styles.activeButton]}
                         onPress={() => handleSlopePress('top-right', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionLeft, activeSlopeButton2 === 'left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionLeft, holeData[currentHole].slopes.slope2 === 'left' && styles.activeButton]}
                         onPress={() => handleSlopePress('left', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionRight, activeSlopeButton2 === 'right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionRight, holeData[currentHole].slopes.slope2 === 'right' && styles.activeButton]}
                         onPress={() => handleSlopePress('right', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottomLeft, activeSlopeButton2 === 'bottom-left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionBottomLeft, holeData[currentHole].slopes.slope2 === 'bottom-left' && styles.activeButton]}
                         onPress={() => handleSlopePress('bottom-left', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection,                         styles.sectionBottomRight, activeSlopeButton2 === 'bottom-right' && styles.activeButton]}
+                        style={[styles.overlaySection,                         styles.sectionBottomRight, holeData[currentHole].slopes.slope2 === 'bottom-right' && styles.activeButton]}
                         onPress={() => handleSlopePress('bottom-right', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottom, activeSlopeButton2 === 'bottom' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionBottom, holeData[currentHole].slopes.slope2 === 'bottom' && styles.activeButton]}
                         onPress={() => handleSlopePress('bottom', 2)}
                     />
                 </View>
@@ -359,48 +375,48 @@ return (
                 <Image source={require('../images/puttmiss.png')} style={styles.image} />
                 <View style={styles.overlayContainer}>
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTop, activePuttMissButton.putt2 === 'long' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTop, holeData[currentHole].puttMiss.putt2 === 'long' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('long', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTopLeft, activePuttMissButton.putt2 === 'long-left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTopLeft, holeData[currentHole].puttMiss.putt2 === 'long-left' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('long-left', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTopRight, activePuttMissButton.putt2 === 'long-right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTopRight, holeData[currentHole].puttMiss.putt2 === 'long-right' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('long-right', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionLeft, activePuttMissButton.putt2 === 'left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionLeft, holeData[currentHole].puttMiss.putt2 === 'left' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('left', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionRight, activePuttMissButton.putt2 === 'right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionRight, holeData[currentHole].puttMiss.putt2 === 'right' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('right', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottomLeft, activePuttMissButton.putt2 === 'short-left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionBottomLeft, holeData[currentHole].puttMiss.putt2 === 'short-left' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('short-left', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottomRight, activePuttMissButton.putt2 === 'short-right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionBottomRight, holeData[currentHole].puttMiss.putt2 === 'short-right' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('short-right', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottom, activePuttMissButton.putt2 === 'short' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionBottom, holeData[currentHole].puttMiss.putt2 === 'short' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('short', 2)}
                     />
                     <TouchableOpacity
-                        style={[styles.puttMadeButton, puttMade.putt2 && styles.activeButton]}
+                        style={[styles.puttMadeButton, holeData[currentHole].puttMade.putt2 && styles.activeButton]}
                         onPress={() => handlePuttMadePress(2)}>
-                        {puttMade.putt2 && <View style={styles.overlayCircle} />}
+                        {holeData[currentHole].puttMade.putt2 && <View style={styles.overlayCircle} />}
                     </TouchableOpacity>
                 </View>
             </View>                    
             <View style={styles.verticalContainer}>
                 <View style={styles.switchContainer}>
                     <Text style={styles.switchLabel}>Misread: </Text>
-                    <Switch style={styles.smallSwitch} value={misread2} onValueChange={setMisread2} />
+                    <Switch style={styles.smallSwitch} value={holeData[currentHole].misread.misread2} onValueChange={(value) => handleMisreadChange(2, value)} />
                 </View>
                 <View style={styles.distanceContainer}>
                     <Text style={styles.distanceLabel}>Putt Distance: </Text>
@@ -431,36 +447,36 @@ return (
                 <Image source={require('../images/slope.png')} style={styles.image} />
                 <View style={styles.overlayContainer}>
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTop, activeSlopeButton3 === 'top' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTop, holeData[currentHole].slopes.slope3 === 'top' && styles.activeButton]}
                         onPress={() => handleSlopePress('top', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTopLeft, activeSlopeButton3 === 'top-left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTopLeft, holeData[currentHole].slopes.slope3 === 'top-left' && styles.activeButton]}
                         onPress={() => handleSlopePress('top-left', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTopRight, activeSlopeButton3 === 'top-right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTopRight, holeData[currentHole].slopes.slope3 === 'top-right' && styles.activeButton]}
                         onPress={() => handleSlopePress('top-right', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionLeft, activeSlopeButton3 === 'left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionLeft, holeData[currentHole].slopes.slope3 === 'left' && styles.activeButton]}
                         onPress={() => handleSlopePress('left', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionRight, activeSlopeButton3 === 'right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionRight, holeData[currentHole].slopes.slope3 === 'right' && styles.activeButton]}
                         onPress={() => handleSlopePress('right', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottomLeft, activeSlopeButton3 === 'bottom-left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionBottomLeft, holeData[currentHole].slopes.slope3 === 'bottom-left' && styles.activeButton]}
                         onPress={() => handleSlopePress('bottom-left', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottomRight, activeSlopeButton3 === 'bottom-right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionBottomRight, holeData[currentHole].slopes.slope3 === 'bottom-right' && styles.activeButton]}
                         onPress={() => handleSlopePress('bottom-right', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottom, activeSlopeButton3 === 'bottom' && styles.activeButton]}
-                        onPress={() => handleSlopePress3('bottom', 3)}
+                        style={[styles.overlaySection, styles.sectionBottom, holeData[currentHole].slopes.slope3 === 'bottom' && styles.activeButton]}
+                        onPress={() => handleSlopePress('bottom', 3)}
                     />
                 </View>
             </View>
@@ -468,48 +484,48 @@ return (
                 <Image source={require('../images/puttmiss.png')} style={styles.image} />
                 <View style={styles.overlayContainer}>
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTop, activePuttMissButton.putt3 === 'long' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTop, holeData[currentHole].puttMiss.putt3 === 'long' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('long', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTopLeft, activePuttMissButton.putt3 === 'long-left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTopLeft, holeData[currentHole].puttMiss.putt3 === 'long-left' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('long-left', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionTopRight, activePuttMissButton.putt3 === 'long-right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionTopRight, holeData[currentHole].puttMiss.putt3 === 'long-right' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('long-right', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionLeft, activePuttMissButton.putt3 === 'left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionLeft, holeData[currentHole].puttMiss.putt3 === 'left' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('left', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionRight, activePuttMissButton.putt3 === 'right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionRight, holeData[currentHole].puttMiss.putt3 === 'right' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('right', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottomLeft, activePuttMissButton.putt3 === 'short-left' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionBottomLeft, holeData[currentHole].puttMiss.putt3 === 'short-left' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('short-left', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottomRight, activePuttMissButton.putt3 === 'short-right' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionBottomRight, holeData[currentHole].puttMiss.putt3 === 'short-right' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('short-right', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.overlaySection, styles.sectionBottom, activePuttMissButton.putt3 === 'short' && styles.activeButton]}
+                        style={[styles.overlaySection, styles.sectionBottom, holeData[currentHole].puttMiss.putt3 === 'short' && styles.activeButton]}
                         onPress={() => handlePuttMissPress('short', 3)}
                     />
                     <TouchableOpacity
-                        style={[styles.puttMadeButton, puttMade.putt3 && styles.activeButton]}
+                        style={[styles.puttMadeButton, holeData[currentHole].puttMade.putt3 && styles.activeButton]}
                         onPress={() => handlePuttMadePress(3)}>
-                        {puttMade.putt3 && <View style={styles.overlayCircle} />}
+                        {holeData[currentHole].puttMade.putt3 && <View style={styles.overlayCircle} />}
                     </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.verticalContainer}>
                 <View style={styles.switchContainer}>
                     <Text style={styles.switchLabel}>Misread: </Text>
-                    <Switch style={styles.smallSwitch} value={misread3} onValueChange={setMisread3} />
+                    <Switch style={styles.smallSwitch} value={holeData[currentHole].misread.misread3} onValueChange={(value) => handleMisreadChange(3, value)} />
                 </View>
                 <View style={styles.distanceContainer}>
                     <Text style={styles.distanceLabel}>Putt Distance: </Text>

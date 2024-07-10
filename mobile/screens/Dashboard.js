@@ -31,17 +31,43 @@ const Dashboard = () => {
                 </View>
             </View>
 
+            
+            <View style={styles.columnContainer}>
+                <View style={styles.leftColumn}>
+                <Text style={styles.text4}>Putt Make Stats</Text>
+                    <Text style={styles.text3}>0-5 ft: </Text>
+                    <Text style={styles.text3}>5-10 ft: </ Text>
+                    <Text style={styles.text3}>10-15 ft:</Text>
+                    <Text style={styles.text3}>15-20 ft: </Text>
+                    <Text style={styles.text3}>20-30 ft: </ Text>
+                    <Text style={styles.text3}>30-40 ft:</Text>
+                    <Text style={styles.text3}>40+ ft:</Text>
+                </View>
+                 <View style={styles.rightColumn}>
+                     <Text style={styles.text4}>Putt Miss Stats</Text>
+                    <Text style={styles.text3}>0-5 ft: </Text>
+                    <Text style={styles.text3}>5-10 ft: </ Text>
+                    <Text style={styles.text3}>10-15 ft:</Text>
+                    <Text style={styles.text3}>15-20 ft: </Text>
+                    <Text style={styles.text3}>20-30 ft: </ Text>
+                    <Text style={styles.text3}>30-40 ft:</Text>
+                    <Text style={styles.text3}>40+ ft:</Text>
+                </View>
+            </View>
+
             <Text style={styles.text2}>Game Stats</Text>
             <View style={styles.columnContainer}>
                 <View style={styles.leftColumn}>
                     <Text style={styles.text3}>Games Played: 20 </ Text>
-                    <Text style={styles.text3}>Wins: 15 </ Text>
-                    <Text style={styles.text3}>Losses: 5 </Text>
+                    <Text style={styles.text3}>Avg # Birdies: 3 </ Text>
+                    <Text style={styles.text3}>U/D %: 50% </Text>
                 </View>
                 <View style={styles.rightColumn}>
                     <Text style={styles.text3}>Avg Score: 70</Text>
                     <Text style={styles.text3}>Best Score: 65</Text>
                     <Text style={styles.text3}>Worst Score: 80</Text>
+                    <Text style={styles.text3}>Avg dist GIR: 25</Text>
+                    <Text style={styles.text3}>Avg dist mGIR: 14</Text>
                 </View>
             </View>
             <Button 
@@ -93,6 +119,12 @@ const styles = StyleSheet.create({
     },
     text3: {
         fontSize: 12,
+    },
+    text4: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        alignContent: 'center',
     },
 });
 

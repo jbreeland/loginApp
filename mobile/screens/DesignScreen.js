@@ -139,6 +139,9 @@ const DesignScreen = () => {
         setCurrentHole(hole);
     };
     
+    const calculateTotalScore = () => {
+        return holes.reduce((total, hole) => total + holeData[hole].score, 0);
+    };
 
 return (
     <>
@@ -164,12 +167,22 @@ return (
                         </View>
                     </TouchableOpacity>
                  ))}
-            </View>
-            <TouchableOpacity onPress={goToNextHole}>
+            
+           
+            <View style={styles.totalsColumn}>
+                <Text style={styles.totalText}>Tot.</Text>
+                
+                <View style={styles.separator} />
+                <Text style={styles.watermark}>Par</Text>
+                <Text style={styles.parText}>72</Text>
+                <View style={styles.separator} />
+                <Text style={styles.watermark}>Score</Text>
+                <Text style={styles.scoreCardText}>{calculateTotalScore()}</Text>
+            </View><TouchableOpacity onPress={goToNextHole}>
                 <Text style={styles.arrow}>▶</Text>
             </TouchableOpacity>
          </View>
-    
+         </View>
        
          <View style={styles.alignedContainer}>
     <View style={styles.scoreContainer}>

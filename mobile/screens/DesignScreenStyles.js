@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         height: 110, // Increased height
         justifyContent: 'center',
         alignItems: 'center',
-        marginHorizontal: 5,
+        marginHorizontal: 2,
         backgroundColor: '#eee',
         borderRadius: 5,
         padding: 5,
@@ -51,6 +51,21 @@ const styles = StyleSheet.create({
     scoreCardText: {
         fontSize: 14, // Font size for the score in the scorecard
     },
+    totalsColumn: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 5, 
+        borderWidth: 1,
+        borderColor: 'black', 
+        padding: 5,// Adjust vertical margin for spacing// Adjust as necessary for spacing
+    },
+    totalText: {
+        fontSize: 16, // Adjust size as needed
+        fontWeight: 'bold',
+        marginVertical: 2,
+        
+    },
+   
     scoreText: {
         fontSize: 30, // Font size for the score in the score container
         fontWeight: 'bold',

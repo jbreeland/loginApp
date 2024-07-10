@@ -45,12 +45,16 @@ const Dashboard = () => {
                 </View>
             </View>
             <Button 
-                title="Go to Design Screen" 
-                onPress={() => navigation.navigate('Design')} 
+                title="Go to Data Entry Screen" 
+                onPress={() => navigation.navigate('DataEntry')} 
             />
             <Button 
                 title="Go to Test Screen" 
                 onPress={() => navigation.navigate('Test')} 
+            />
+            <Button 
+                title="Go to Design Screen" 
+                onPress={() => navigation.navigate('Design')} 
             />
         </View>
     );
